@@ -2,6 +2,8 @@
 
 Máy game thùng lập trình 8-bit / 16-bit chạy thuần web (HTML5, CSS3, ES6 JavaScript, Web Audio API), không cần cài đặt bất kỳ thư viện ngoài nào.
 
+👉 **Chơi trực tiếp trên web (Live Demo):** [https://doancongminh23bi14287.github.io/code-arcade/](https://doancongminh23bi14287.github.io/code-arcade/)
+
 ---
 
 ## 🚀 Cách chạy nhanh
