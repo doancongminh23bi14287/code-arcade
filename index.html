@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>CODE ARCADE — Máy Game Thùng Lập Trình 8-Bit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="arcadeCabinet" class="arcade-cabinet crt-active">
+    <!-- Hiệu ứng quét Scanline CRT cổ điển -->
+    <div class="crt-scanline-overlay" aria-hidden="true"></div>
+
+    <!-- Thanh tiêu đề Marquee của máy Arcade -->
+    <header class="arcade-marquee">
+      <div class="marquee-left">
+        <button id="btnNavHome" class="arcade-mini-btn" style="display: none;">🏠 HUB</button>
+        <div class="arcade-logo">
+          <span class="logo-icon">🕹️</span>
+          <span class="logo-text">CODE ARCADE</span>
+        </div>
+      </div>
+      <div class="marquee-right">
+        <button id="btnGlobalMute" class="arcade-mini-btn" title="Bật/Tắt âm thanh">🔊 ÂM THANH</button>
+        <button id="btnGlobalCrt" class="arcade-mini-btn active" title="Bật/Tắt hiệu ứng CRT">📺 SCANLINE</button>
+        <button id="btnOpenLeaderboard" class="arcade-mini-btn gold" title="Bảng xếp hạng">🏆 XẾP HẠNG</button>
+      </div>
+    </header>
+
+    <!-- MÀN HÌNH CHÍNH (ARCADE SCREEN CONTAINER) -->
+    <main class="arcade-screen-viewport">
+
+      <!-- ========================================== -->
+      <!-- 1. MÀN HÌNH CHÍNH: ARCADE HUB              -->
+      <!-- ========================================== -->
+      <section id="screen-hub" class="arcade-screen">
+        <div class="hub-hero">
+          <h1 class="hub-title">CHỌN CHẾ ĐỘ CHƠI</h1>
+          <p class="hub-subtitle">3 VAI TRÒ HỌC TẬP LẬP TRÌNH PYTHON & DSA TRÊN MÁY THÙNG 8-BIT</p>
+        </div>
+
+        <div class="hub-modes-grid">
+          <!-- Chế độ 1: Code Kitchen -->
+          <article class="mode-card card-kitchen" id="cardModeKitchen">
+            <div class="card-badge">HỌC SÂU 4 KHÂU</div>
+            <div class="card-icon">🍕</div>
+            <h2 class="card-title">CODE KITCHEN</h2>
+            <p class="card-desc">Kiểu Papa's Pizzeria: Tiếp khách ➔ Bàn sơ chế ➔ Bếp nấu Live Code ➔ Giao đĩa cho khách chấm điểm!</p>
+            <div class="card-tags">
+              <span>Biến & Input</span>
+              <span>For / If / Hàm</span>
+              <span>Đánh giá S/A/B/C</span>
+            </div>
+            <button class="arcade-btn primary">VÀO BẾP CHƠI ▶</button>
+          </article>
+
+          <!-- Chế độ 2: Code Blast -->
+          <article class="mode-card card-blast" id="cardModeBlast">
+            <div class="card-badge">ENDLESS 3 TIM</div>
+            <div class="card-icon">⚡</div>
+            <h2 class="card-title">CODE BLAST</h2>
+            <p class="card-desc">Xếp khối tự do (Free-Snap), laser xanh tự động quét từ trên xuống (Auto-Scanline), nổ hạt combo và trượt code!</p>
+            <div class="card-tags">
+              <span>Size S/M/L chuẩn</span>
+              <span>Chống lộ đáp án</span>
+              <span>Tia laser xanh</span>
+            </div>
+            <button class="arcade-btn primary">BẮN CODE NGAY ▶</button>
+          </article>
+
+          <!-- Chế độ 3: Big-O Grand Prix -->
+          <article class="mode-card card-racing" id="cardModeRacing">
+            <div class="card-badge">MCQ SPEED RUN</div>
+            <div class="card-icon">🏎️</div>
+            <h2 class="card-title">BIG-O GRAND PRIX</h2>
+            <p class="card-desc">Đua xe 3 làn phong cách 8-bit trắc nghiệm DSA & Big-O, đạp ga NITRO, chạy trốn bức tường lửa TLE rượt đuổi!</p>
+            <div class="card-tags">
+              <span>DSA & Big-O</span>
+              <span>Tường lửa TLE</span>
+              <span>Tăng tốc Nitro</span>
+            </div>
+            <button class="arcade-btn primary">XUẤT PHÁT ĐUA ▶</button>
+          </article>
+        </div>
+
+        <div class="hub-footer">
+          <small>👾 RETRO 8-BIT SOUNDS · WEBAUDIO API · LOCALSTORAGE HIGHSCORES · FULL MOBILE TOUCH</small>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 2. CHẾ ĐỘ 1: CODE KITCHEN                  -->
+      <!-- ========================================== -->
+      <section id="screen-kitchen" class="arcade-screen hidden">
+        <div class="kitchen-top-bar">
+          <nav id="kitchenStationNav" class="station-nav"></nav>
+          <div class="kitchen-stat-badge">
+            <small>TỔNG TIỀN & ĐIỂM:</small>
+            <b id="kitchenTotalScore">0</b>
+          </div>
+        </div>
+
+        <div class="kitchen-layout">
+          <!-- Khung nội dung của từng trạm -->
+          <div class="kitchen-main-workarea">
+            <div id="stationView-1" class="station-view"></div>
+            <div id="stationView-2" class="station-view hidden"></div>
+            <div id="stationView-3" class="station-view hidden"></div>
+            <div id="stationView-4" class="station-view hidden"></div>
+          </div>
+
+          <!-- Tờ Order Ticket ghim cố định bên góc -->
+          <aside id="kitchenOrderTicket" class="order-ticket-panel"></aside>
+        </div>
+
+        <div id="kitchenToast" class="kitchen-toast"></div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 3. CHẾ ĐỘ 2: CODE BLAST                    -->
+      <!-- ========================================== -->
+      <section id="screen-blast" class="arcade-screen hidden">
+        <header class="blast-hud">
+          <div class="hud-item"><small>SCORE</small><b id="blastScore">0</b></div>
+          <div class="hud-item"><small>COMBO</small><b id="blastCombo">x0</b></div>
+          <div class="hud-item"><small>LIVES</small><b id="blastLives">❤️❤️❤️</b></div>
+          <div class="hud-item"><small>PROGRESS</small><b id="blastLevelIndicator">WAVE 1</b></div>
+        </header>
+
+        <div class="blast-prompt-box" id="blastPrompt">Đang nạp câu hỏi...</div>
+
+        <div class="blast-grid-wrapper">
+          <div id="blastScanline" class="blast-scanline-laser hidden"></div>
+          <main id="blastCodeGrid" class="blast-grid"></main>
+        </div>
+
+        <div id="blastToast" class="blast-toast"></div>
+
+        <section class="blast-tray-section">
+          <small class="tray-label">KHAY KHỐI — Kéo thả hoặc chạm khối rồi chạm ô trống (Chạm ô đã điền để gỡ lại)</small>
+          <div id="blastTray" class="blast-tray"></div>
+        </section>
+
+        <!-- Modal Game Over cho Blast -->
+        <div id="blastGameOverModal" class="arcade-modal hidden">
+          <div class="modal-card">
+            <h2 class="modal-title bad">GAME OVER!</h2>
+            <p>Hết 3 tim. Mã nguồn đã hoàn thành xuất sắc các wave trước đó!</p>
+            <div class="modal-stats">
+              <div><span>Tổng điểm:</span> <b id="finalBlastScore">0</b></div>
+              <div><span>Wave hoàn thành:</span> <b id="finalBlastWaves">0</b></div>
+              <div><span>Max Combo:</span> <b id="finalBlastCombo">x0</b></div>
+            </div>
+            <div class="modal-actions">
+              <button id="btnSaveBlastScore" class="arcade-btn gold">🏆 LƯU KỶ LỤC</button>
+              <button id="btnRestartBlast" class="arcade-btn primary">↺ CHƠI LẠI</button>
+              <button id="btnQuitBlast" class="arcade-btn">🏠 VỀ HUB</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- 4. CHẾ ĐỘ 3: BIG-O GRAND PRIX              -->
+      <!-- ========================================== -->
+      <section id="screen-racing" class="arcade-screen hidden">
+        <header class="racing-hud">
+          <div class="racing-q-box">
+            <span id="racingQuestionTitle" class="q-title">CÂU HỎI DSA</span>
+            <div id="racingQuestionText" class="q-text">Đang tải đề bài...</div>
+          </div>
+          <div class="racing-stats">
+            <div class="hud-item"><small>SCORE</small><b id="racingScore">0</b></div>
+            <div class="hud-item"><small>COMBO</small><b id="racingCombo">x0</b></div>
+            <div class="hud-item tle-meter">
+              <small>KHOẢNG CÁCH TLE:</small>
+              <div class="tle-track">
+                <div id="racingTleBar" class="tle-fill" style="width: 85%;"></div>
+                <span id="racingTleText" class="tle-val">85m</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="racing-canvas-wrapper">
+          <canvas id="racingCanvas"></canvas>
+        </div>
+
+        <div id="racingToast" class="racing-toast"></div>
+
+        <!-- Điều khiển ảo cho Mobile -->
+        <footer class="racing-controls-bar" id="racingControls">
+          <button id="btnRacingLeft" class="arcade-ctrl-btn">◀ QUA TRÁI (A)</button>
+          <span class="ctrl-hint">Phím mũi tên ◀ ▶ hoặc A / D</span>
+          <button id="btnRacingRight" class="arcade-ctrl-btn">QUA PHẢI (D) ▶</button>
+        </footer>
+
+        <!-- Modal Game Over cho Racing -->
+        <div id="racingGameOverModal" class="arcade-modal hidden">
+          <div class="modal-card">
+            <h2 class="modal-title bad">TLE TIMEOUT!</h2>
+            <p>Bức tường lửa Time Limit Exceeded đã nuốt chửng xe của bạn!</p>
+            <div class="modal-stats">
+              <div><span>Tổng điểm:</span> <b id="finalRacingScore">0</b></div>
+              <div><span>Số câu vượt qua:</span> <b id="finalRacingQuestions">0</b></div>
+              <div><span>Max Combo:</span> <b id="finalRacingCombo">x0</b></div>
+            </div>
+            <div class="modal-actions">
+              <button id="btnSaveRacingScore" class="arcade-btn gold">🏆 LƯU KỶ LỤC</button>
+              <button id="btnRestartRacing" class="arcade-btn primary">↺ ĐUA LẠI</button>
+              <button id="btnQuitRacing" class="arcade-btn">🏠 VỀ HUB</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- BẢNG XẾP HẠNG TOÀN CỤC (LEADERBOARD MODAL) -->
+    <!-- ========================================== -->
+    <div id="leaderboardModal" class="arcade-modal hidden">
+      <div class="modal-card wide">
+        <div class="modal-header">
+          <h2 class="modal-title gold">🏆 BẢNG VÀNG KỶ LỤC ARCADE</h2>
+          <button id="btnCloseLeaderboard" class="modal-close-btn">&times;</button>
+        </div>
+
+        <!-- Form nhập Nickname khi vừa hoàn thành game -->
+        <div id="saveScoreSection" class="save-score-banner hidden">
+          <p id="saveScorePrompt">Ghi danh bảng vàng của bạn:</p>
+          <form id="saveScoreForm" class="nickname-form">
+            <input type="text" id="playerNicknameInput" placeholder="NICK (3-8 KÝ TỰ)" maxlength="8" required autocomplete="off">
+            <button type="submit" class="arcade-btn gold">LƯU TÊN 💾</button>
+          </form>
+        </div>
+
+        <!-- 3 Tab chọn game -->
+        <div class="lb-tabs">
+          <button class="lb-tab-btn active" data-game="kitchen">🍕 CODE KITCHEN</button>
+          <button class="lb-tab-btn" data-game="blast">⚡ CODE BLAST</button>
+          <button class="lb-tab-btn" data-game="racing">🏎️ BIG-O GRAND PRIX</button>
+        </div>
+
+        <!-- Bảng danh sách Top điểm -->
+        <div class="lb-table-wrap">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>HẠNG</th>
+                <th>TÊN THỦ LĨNH</th>
+                <th>ĐIỂM SỐ</th>
+                <th>GHI CHÚ / NGÀY</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nạp các script game -->
+  <script src="audio.js"></script>
+  <script src="data.js"></script>
+  <script src="game-kitchen.js"></script>
+  <script src="game-blast.js"></script>
+  <script src="game-racing.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
